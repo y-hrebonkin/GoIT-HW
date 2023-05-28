@@ -8,5 +8,7 @@ def get_employees_by_profession(path, profession):
     return result
 
 
+    
+
 # result = get_employees_by_profession('employees.txt', 'cook')
 # print(result)

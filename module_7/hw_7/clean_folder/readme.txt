@@ -1,0 +1,1 @@
+ python -m clean_folder C:\Users\YH\Desktop\Files працює

@@ -1,30 +1,24 @@
 from datetime import datetime, timedelta
 
 def get_birthdays_per_week(users):
-    # Отримуємо поточну дату
     current_date = datetime.now().date()
-    # Визначаємо початок тижня (понеділок)
     start_of_week = current_date - timedelta(days=current_date.weekday())
-    
-    # Створюємо словник для збереження користувачів за днями тижня
+
     birthdays_per_week = {i: [] for i in range(7)}
-    
-    # Проходимося по кожному користувачеві
+
     for user in users:
-        # Отримуємо день народження користувача
         birthday = user['birthday'].date()
-        
-        # Обчислюємо різницю між днем народження та початком тижня
         diff = (birthday - start_of_week).days
-        
-        # Перевіряємо, чи день народження впадає на поточний або наступний тиждень
+
+        if diff >= 5:  # Включаємо суботу та неділю
+            diff = (diff + 7 - start_of_week.weekday()) % 7
+            if diff == 0:
+                diff = 7
+
         if 0 <= diff < 7:
-            # Визначаємо день тижня для вітання
             greeting_day = (start_of_week + timedelta(days=diff)).strftime('%A')
-            # Додаємо користувача до списку іменинників у відповідний день
             birthdays_per_week[diff].append(user['name'])
-    
-    # Виводимо список іменинників по днях тижня
+
     for diff, names in birthdays_per_week.items():
         if names:
             greeting_day = (start_of_week + timedelta(days=diff)).strftime('%A')
@@ -32,10 +26,12 @@ def get_birthdays_per_week(users):
 
 # Приклад використання
 users = [
-    {'name': 'Anna', 'birthday': datetime(2023, 5, 29)},
-    {'name': 'Sveta', 'birthday': datetime(2023, 5, 29)},
-    {'name': 'Yura', 'birthday': datetime(2023, 5, 31)},
-    {'name': 'Jenya', 'birthday': datetime(2023, 6, 2)},
+    {'name': 'Anna', 'birthday': datetime(1985, 5, 29)},
+    {'name': 'Sveta', 'birthday': datetime(1961, 5, 29)},
+    {'name': 'Yura', 'birthday': datetime(1993, 5, 31)},
+    {'name': 'Jenya', 'birthday': datetime(1989, 6, 2)},
+    {'name': 'John', 'birthday': datetime(1990, 6, 5)},
+    {'name': 'Kate', 'birthday': datetime(1992, 6, 7)},
 ]
 
 get_birthdays_per_week(users)

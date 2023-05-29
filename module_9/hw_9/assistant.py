@@ -10,25 +10,32 @@ def input_error(func):
             return "Invalid command! Please try again."
     return inner
 
-def hello():
+@input_error
+def hello_command():
     return "How can I help you?"
 
 @input_error
-def add_contact(name, phone, contacts):
+def create_contact_command(name, phone, contacts):
+    if name in contacts:
+        return f"Contact '{name}' already exists. Use 'change' command to update the phone number."
     contacts[name] = phone
-    return f"Contact '{name}' with phone number '{phone}' added."
+    return f"Contact '{name}' with phone number '{phone}' created."
 
 @input_error
-def change_contact(name, phone, contacts):
+def change_contact_command(name, phone, contacts):
+    if name not in contacts:
+        return f"Contact '{name}' does not exist. Use 'add' command to create a new contact."
     contacts[name] = phone
     return f"Phone number for contact '{name}' changed to '{phone}'."
 
 @input_error
-def get_phone(name, contacts):
-    phone = contacts[name]
+def get_phone_command(name, contacts):
+    phone = contacts.get(name)
+    if phone is None:
+        return f"Contact '{name}' does not exist."
     return f"The phone number for contact '{name}' is '{phone}'."
 
-def show_all_contacts(contacts):
+def show_all_contacts_command(contacts):
     if len(contacts) == 0:
         return "No contacts found."
     else:
@@ -43,19 +50,19 @@ def main():
     while True:
         command = input("Enter a command: ").lower()
         
-        if command == "hello":
-            response = hello()
+        if command in ["hello", "hi", "привіт"]:
+            response = hello_command()
         elif command.startswith("add"):
             _, name, phone = command.split()
-            response = add_contact(name, phone, contacts)
+            response = create_contact_command(name, phone, contacts)
         elif command.startswith("change"):
             _, name, phone = command.split()
-            response = change_contact(name, phone, contacts)
+            response = change_contact_command(name, phone, contacts)
         elif command.startswith("phone"):
             _, name = command.split()
-            response = get_phone(name, contacts)
+            response = get_phone_command(name, contacts)
         elif command == "show all":
-            response = show_all_contacts(contacts)
+            response = show_all_contacts_command(contacts)
         elif command in ["good bye", "close", "exit"]:
             print("Good bye!")
             break

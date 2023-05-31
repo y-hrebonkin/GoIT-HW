@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 class Field:
     def __init__(self, value=None):
@@ -11,6 +11,8 @@ class Field:
 
     @value.setter
     def value(self, new_value):
+        if new_value is None:
+            raise ValueError("Field value cannot be None")
         self._value = new_value
 
 
@@ -20,30 +22,35 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, value=None):
+        if value is None:
+            raise ValueError("Phone number cannot be None")
         super().__init__(value)
         self._validate_phone_number()
 
     def _validate_phone_number(self):
-        if self.value is not None and not self._is_valid_phone_number():
+        if not self._is_valid_phone_number():
             raise ValueError("Invalid phone number format")
 
     def _is_valid_phone_number(self):
         # Add your phone number validation logic here
-        return True
+        # Example: Check if the phone number has 10 digits
+        return len(str(self.value)) == 10
 
 
 class Birthday(Field):
     def __init__(self, value=None):
+        if value is None:
+            raise ValueError("Birthday cannot be None")
         super().__init__(value)
         self._validate_birthday()
 
     def _validate_birthday(self):
-        if self.value is not None and not self._is_valid_birthday():
+        if not self._is_valid_birthday():
             raise ValueError("Invalid birthday format")
 
     def _is_valid_birthday(self):
-        # Add your birthday validation logic here
-        return True
+        today = datetime.today().date()
+        return self.value.date() < today
 
 
 class Record:
